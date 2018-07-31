@@ -1,8 +1,5 @@
-# homework_list
+# List sample
 
-A new Flutter application.
+Flutter study project using open source libraries
 
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+  * Used [flutter_sticky_header](https://github.com/letsar/flutter_sticky_header) by [Romain Rastel](https://github.com/letsar)
