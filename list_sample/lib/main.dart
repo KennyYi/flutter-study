@@ -14,6 +14,7 @@ class KennyListApp extends StatelessWidget {
       theme: new ThemeData(
         primaryColor: Colors.white,
       ),
+//      home: new MainScreen(),
       home: new MainScreen(),
     );
   }
