@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:collection';
 import 'PictureView.dart';
 import 'PictureController.dart';
 import 'Picture.dart';
@@ -12,7 +13,7 @@ class MainScreen extends StatefulWidget {
 
 class _FilterState extends State<MainScreen> {
 
-    int _filter = -1; // Index. -1 means no filter.
+    var _filterName = "";
 
     @override
     Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _FilterState extends State<MainScreen> {
                         padding: new EdgeInsets.all(10.0),
                         child: new UnicornDialer(
                             parentButton: Icon(Icons.filter_list),
-                            childButtons: _getFilters(),
+                            childButtons: _getFilterButtons(),
                             onMainButtonPressed: () {
                                 print("onMainButtonPressed.. ");
                             },
@@ -50,9 +51,11 @@ class _FilterState extends State<MainScreen> {
 
         var pictureViews = new List<PictureView>();
         for (int i = 0; i < pictureCount; i++) {
-            if (_filter == -1) {
+            var name = controller.getPicture(i).user;
+
+            if (_filterName == "") {
                 pictureViews.add(new PictureView(picture: controller.getPicture(i)));
-            } else if (_filter == i) {
+            } else if (_filterName == name) {
                 pictureViews.add(new PictureView(picture: controller.getPicture(i)));
             }
         }
@@ -60,39 +63,44 @@ class _FilterState extends State<MainScreen> {
         return pictureViews;
     }
 
-    List<UnicornButton> _getFilters() {
+    List<UnicornButton> _getFilterButtons() {
 
         var controller = PictureController.getInstance();
         int pictureCount = controller.getPictureCount();
+        var filterButtons = new List<UnicornButton>();
+        var filterMap = new HashSet<String>();
 
-        var filters = new List<UnicornButton>();
-        
-        filters.add(new UnicornButton(
+        filterMap.add("");
+        filterButtons.add(new UnicornButton(
             currentButton: FloatingActionButton(
                 child: Text("All"),
                 onPressed: () {
                     setState(() {
-                        _filter = -1;
+                        _filterName = "";
                     });
-            }),
+                }),
         ));
-        
+
         for (int i = 0; i < pictureCount; i++) {
 
-            filters.add(new UnicornButton(
-                currentButton: FloatingActionButton(
+            var name = controller.getPicture(i).user;
 
-                    child: _getProfileImageWidget(controller.getPicture(i)),
-                    onPressed: () {
-                        setState(() {
-                            _filter = i;
-                        });
-                    },
-                )
-            ));
+            if (filterMap.contains(name)) continue;
+            else {
+                filterMap.add(name);
+                filterButtons.add(new UnicornButton(
+                    currentButton: FloatingActionButton(
+                        child: _getProfileImageWidget(controller.getPicture(i)),
+                        onPressed: () {
+                            setState(() {
+                                _filterName = name;
+                            });
+                        }),
+                ));
+            }
         }
 
-        return filters;
+        return filterButtons;
     }
 
     Widget _getProfileImageWidget(Picture picture) {
