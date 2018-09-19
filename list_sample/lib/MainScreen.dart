@@ -20,27 +20,21 @@ class _FilterState extends State<MainScreen> {
 
         var items = _buildItems();
 
-        return new Scaffold(
-            appBar: AppBar(
-                title: Text('Kenny Example'),
-            ),
-            backgroundColor: Colors.white,
-            body: new Stack(
-                alignment: Alignment.bottomRight,
-                children: <Widget>[
-                    new CustomScrollView(slivers: items,),
-                    new Container(
-                        padding: new EdgeInsets.all(10.0),
-                        child: new UnicornDialer(
-                            parentButton: Icon(Icons.filter_list),
-                            childButtons: _getFilterButtons(),
-                            onMainButtonPressed: () {
-                                print("onMainButtonPressed.. ");
-                            },
-                        ),
+        return new Stack(
+            alignment: Alignment.bottomRight,
+            children: <Widget>[
+                new CustomScrollView(slivers: items,),
+                new Container(
+                    padding: new EdgeInsets.all(10.0),
+                    child: new UnicornDialer(
+                        parentButton: Icon(Icons.filter_list),
+                        childButtons: _getFilterButtons(),
+                        onMainButtonPressed: () {
+                            print("onMainButtonPressed.. ");
+                        },
                     ),
-                ] ,
-            ),
+                ),
+            ] ,
         );
     }
 
