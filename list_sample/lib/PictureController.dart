@@ -17,26 +17,39 @@ class PictureController extends WidgetsBindingObserver {
     }
 
     PictureController() {
+        print("[PictureController]");
 
         _createDummy();
     }
 
     List<Picture> getPictures() {
 
+        print("==================");
+        for (var picture in _pictures) {
+            print("-  ${picture.user}");
+        }
+
         return _pictures;
     }
 
     Picture getPicture(int index) {
-
-        if (index < _pictures.length) {
-            return _pictures[index];
-        }
-
+        if (index < _pictures.length) return _pictures[index];
         return null;
     }
 
-    int getPictureCount() {
+    void reorder(int oldIndex, int newIndex) {
 
+        var picture = _pictures[oldIndex];
+        _pictures.removeAt(oldIndex);
+
+        if (newIndex >= _pictures.length) {
+            _pictures.add(picture);
+        } else {
+            _pictures.insert(newIndex, picture);
+        }
+    }
+
+    int getPictureCount() {
         return _pictures.length;
     }
 

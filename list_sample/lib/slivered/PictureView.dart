@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Picture.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import '../Picture.dart';
 
 class PictureView extends StatelessWidget {
 

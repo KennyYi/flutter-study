@@ -14,4 +14,8 @@ class Picture {
         this.userIcon:"",
         this.description:"",
     });
+
+    Key getKey() {
+        return Key((path + user + userIcon + description).hashCode.toString());
+    }
 }

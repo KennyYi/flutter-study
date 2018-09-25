@@ -5,10 +5,19 @@ import '../PictureController.dart';
 
 class IntroPageView extends StatelessWidget {
 
-    var controller = PictureController.getInstance();
+    PictureController controller;
+
+    IntroPageView({
+        @required this.controller,
+    });
 
     @override
     Widget build(BuildContext context) {
+
+        if (controller == null) {
+            controller = PictureController.getInstance();
+        }
+
         return Scaffold(
             body: Center(
                 child: SizedBox.fromSize(
