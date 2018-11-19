@@ -19,19 +19,26 @@ class ReorderableMainView extends StatefulWidget {
 class _OrderState extends State<ReorderableMainView> {
 
     List<Picture> _items;
+    bool _isComplete = false;
 
     @override
     Widget build(BuildContext context) {
+
+        _isComplete = widget.controller.isLoadingComplete;
 
         if (_items == null) {
             _items = widget.controller.getPictures();
         }
 
+        if (!_isComplete) widget.controller.registCallback(_callback);
+
         // Default widget
-        return ReorderableListView(
+        return _isComplete?
+        ReorderableListView(
             children: _getChildren(),
             onReorder: _reorder,
-        );
+        ):
+        _progressWidget();
 
         // Open source library
         /*
@@ -45,6 +52,15 @@ class _OrderState extends State<ReorderableMainView> {
             onDragFinish: _reorder
         );
         */
+    }
+
+    Widget _progressWidget() {
+
+        return Container(
+            child: Center(
+                child: CircularProgressIndicator(),
+            ),
+        );
     }
 
     List<ReorderablePictureView> _getChildren() {
@@ -64,5 +80,9 @@ class _OrderState extends State<ReorderableMainView> {
             PictureController.getInstance().reorder(oldIndex, newIndex);
             _items = widget.controller.getPictures();
         });
+    }
+
+    _callback() {
+        setState(() => _isComplete = true);
     }
 }

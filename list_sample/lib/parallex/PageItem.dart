@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import './page_transformer.dart';
+import './PageTransformer.dart';
 import '../Picture.dart';
 
-class IntroPageItem extends StatelessWidget {
-    IntroPageItem({
+class PageItem extends StatelessWidget {
+    PageItem({
         @required this.picture,
         @required this.pageVisibility,
     });

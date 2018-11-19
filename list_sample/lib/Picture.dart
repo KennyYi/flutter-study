@@ -16,6 +16,12 @@ class Picture {
     });
 
     Key getKey() {
+
+        print("path: $path");
+        print("user: $user");
+        print("userIcon: $userIcon");
+        print("description: $description");
+
         return Key((path + user + userIcon + description).hashCode.toString());
     }
 }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'Picture.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PictureController extends WidgetsBindingObserver {
 
+    var _callbacks = Set<VoidCallback>();
     var _pictures = List<Picture>();
+    var isLoadingComplete = false;
 
     static PictureController _instance;
 
@@ -19,8 +23,15 @@ class PictureController extends WidgetsBindingObserver {
     PictureController() {
         print("[PictureController]");
 
-        _createDummy();
+//        _createDummy();
+        load();
     }
+
+    void registCallback(VoidCallback callback) => _callbacks.add(callback);
+
+    void unregistCallback(VoidCallback callback) => _callbacks.remove(callback);
+
+    void clearCallbacks() => _callbacks.clear();
 
     List<Picture> getPictures() {
 
@@ -53,6 +64,29 @@ class PictureController extends WidgetsBindingObserver {
         return _pictures.length;
     }
 
+    load() async {
+
+        await Firestore.instance.collection("SampleData")
+            .getDocuments().then((snapshot) =>
+            snapshot.documents.forEach((documentSnapshot) => _create(documentSnapshot))
+        ).whenComplete(() {
+            isLoadingComplete = true;
+            _callbacks.forEach((callback) => callback());
+        });
+    }
+
+    _create(DocumentSnapshot document) {
+
+        var picture = new Picture(
+            path: document.data["thumbnail"],
+            user: document.data["artist"],
+            description: document.data["description"],
+            userIcon: document.data["userIcon"]
+        );
+
+        _pictures.add(picture);
+    }
+
     _createDummy() {
 
         _pictures.add(new Picture(path: "https://img.youtube.com/vi/BzYnNdJhZQw/0.jpg", user: "IU",
@@ -82,5 +116,7 @@ class PictureController extends WidgetsBindingObserver {
         _pictures.add(new Picture(path: "https://pbs.twimg.com/profile_images/745721116803510272/ve5s5YzG_400x400.jpg", user: "박소담",
             description: "Korean Actress",
             userIcon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG1YMQlak3fP7-dZ8rQ70QSv3rbbmNNdBgLBuePNVSEp4fjci4"));
+
+        isLoadingComplete = true;
     }
 }

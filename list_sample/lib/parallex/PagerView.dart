@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
-import './intro_page_item.dart';
-import './page_transformer.dart';
 import '../PictureController.dart';
+import './PageItem.dart';
+import './PageTransformer.dart';
 
-class IntroPageView extends StatelessWidget {
+class PagerView extends StatefulWidget {
 
     PictureController controller;
 
-    IntroPageView({
+    PagerView({
         @required this.controller,
     });
 
     @override
+    State createState() => _PagerViewState();
+}
+
+class _PagerViewState extends State<PagerView> {
+
+    bool _isComplete = false;
+
+    @override
     Widget build(BuildContext context) {
 
-        if (controller == null) {
-            controller = PictureController.getInstance();
-        }
+        _isComplete = widget.controller.isLoadingComplete;
+
+        if (!_isComplete) widget.controller.registCallback(_callback);
+
+        return _isComplete?_pagerWidget():_progressWidget();
+    }
+
+    Widget _pagerWidget() {
 
         return Scaffold(
             body: Center(
@@ -26,13 +39,13 @@ class IntroPageView extends StatelessWidget {
                         pageViewBuilder: (context, visibilityResolver) {
                             return PageView.builder(
                                 controller: PageController(viewportFraction: 0.85),
-                                itemCount: controller.getPictureCount(),
+                                itemCount: widget.controller.getPictureCount(),
                                 itemBuilder: (context, index) {
-                                    final item = controller.getPicture(index);
+                                    final item = widget.controller.getPicture(index);
                                     final pageVisibility =
                                     visibilityResolver.resolvePageVisibility(index);
 
-                                    return IntroPageItem(
+                                    return PageItem(
                                         picture: item,
                                         pageVisibility: pageVisibility,
                                     );
@@ -43,5 +56,18 @@ class IntroPageView extends StatelessWidget {
                 ),
             ),
         );
+    }
+
+    Widget _progressWidget() {
+
+        return Container(
+            child: Center(
+                child: CircularProgressIndicator(),
+            ),
+        );
+    }
+
+    _callback() {
+        setState(() => _isComplete = true);
     }
 }
